@@ -1,0 +1,13 @@
+#signin.tab-pane{"data-bind" => "css: { active: currentPage() == 'signin' }"}
+  = form_for(@user, :as => :user, :url => session_path(:user) , html: { class: "form-horizontal"  , data: { bind: "submit: signin"  } } ) do |f|                                                    
+    %fieldset
+      #email_group.control-group
+        %label.control-label{:for => "email"} Email
+        .controls
+          = f.email_field :email, autofocus: true , data: { bind: 'value: email' }
+      #password_group.control-group
+        %label.control-label{:for => "password"} Password
+        .controls
+          = f.password_field :password  , data: { bind: "value: password" }
+      .form-actions
+        = f.submit "Sign in" ,  class: "btn btn-primary"  , data: { :"loading-text" => 'loading..' }

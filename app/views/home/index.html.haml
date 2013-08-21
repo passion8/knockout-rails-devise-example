@@ -1,0 +1,12 @@
+#unauthenticated-view-container{'data-bind' => 'visible: !isSignedIn()'}
+  %ul.nav.nav-tabs
+    %li{"data-bind" => "css: { active: currentPage() == 'signin' }"}
+      %a{"data-bind" => "click: showSignin", "data-toggle" => "tab", :href => "#signin"} Login
+    %li{"data-bind" => "css: { active: currentPage() == 'signup' }"}
+      %a{"data-bind" => "click: showSignUp", "data-toggle" => "tab", :href => "#signup"} Sign Up
+  #tab-content.tab-content
+    = render 'shared/signin'
+    = render 'shared/signup'
+:javascript
+  ko.applyBindings(new unauthenticatedViewModel());
+

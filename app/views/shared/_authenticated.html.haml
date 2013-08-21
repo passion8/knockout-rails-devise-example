@@ -1,0 +1,37 @@
+= form_for(@user, :as => :user, :url => destroy_user_session_path ,  html: { data: { bind: "submit: signOut"  } } ) do |f| 
+  = hidden_field_tag '_method', 'delete'
+  = f.submit "Signout" ,  class: "btn btn-primary"
+
+= form_for(@user, :as => :user, :url => registration_path(:user) , html: { class: "form-horizontal" , method: :put, data: { bind: "submit: updateInformation"  } } ) do |f| 
+  
+  %fieldset
+    #email_group.control-group
+      %label.control-label{:for => "email"} My Email
+      .controls
+        = f.email_field :email, autofocus: true , data: { bind: 'value: email' }
+    #email_group.control-group
+      %label.control-label{:for => "email"} Id
+      .controls
+        = f.text_field :id, data: { bind: 'value: id' }
+    #email_group.control-group
+      %label.control-label{:for => "email"} Name
+      .controls
+        = f.text_field :name, data: { bind: 'value: name' } 
+    #email_group.control-group
+      %label.control-label{:for => "Password"} Password
+      .controls
+        = f.password_field :password, :autocomplete => "off" , data: { bind: 'value: update_password' }
+        
+    #email_group.control-group
+      %label.control-label{:for => "email"} Password confirmation
+      .controls
+        = f.password_field :password_confirmation , data: { bind: 'value: update_password_confirmation' }
+    
+    #email_group.control-group
+      %label.control-label{:for => "email"} current Password
+      .controls
+        %span.help-inline We need your password to confirm changes
+        = f.password_field :current_password , data: { bind: 'value: current_password' }
+    .form-actions
+      = f.submit "Update a/c" ,  class: "btn btn-primary" 
+

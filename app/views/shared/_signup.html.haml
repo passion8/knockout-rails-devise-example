@@ -1,0 +1,22 @@
+#signup.tab-pane{"data-bind" => "css: { active: currentPage() == 'signup' }"}
+  = form_for(@user, :as => :user, :url => registration_path(:user) , html: { class: "form-horizontal"  ,
+   data: { bind: "submit: signUp"  } } ) do |f|                                                   
+    %fieldset
+      #email_group.control-group
+        %label.control-label{:for => "login_user_email"} Email
+        .controls
+          = f.email_field :email, autofocus: true , data: { bind: 'value: email' }
+      #password_group.control-group
+        %label.control-label{:for => "login_user_password"} Password
+        .controls
+          = f.password_field :password  , data: { bind: "value: new_signup_password" }
+      #password_confirmation_group.control-group
+        %label.control-label{:for => "login_user_password_confirmation" }  Confirm Password
+        .controls
+          = f.password_field :password_confirmation  , data: { bind: "value: new_signup_password_confirmation" }
+      #email_group.control-group
+        %label.control-label{:for => "login_user_name"} Name
+        .controls
+          = f.text_field :name , data: { bind: 'value: name' }
+      .form-actions
+        = f.submit "Sign up" ,  class: "btn btn-primary" , data: { bind: 'enable: passwordMatch() ' }

@@ -12,5 +12,8 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require_tree .
+//= require bootstrap
 //= require knockout-2.3.0
+//= require sammy
+//= require knockout.mapping-latest
+//= require_tree .
