@@ -1,5 +1,69 @@
+var user = {name: '', id: '' , email: ''}; 
 
-// var authticateViewModel = {};
+var ajaxSubmit = function  (data,onSuccess,onError) {
+    var form = $(data).serialize();
+    var url = $(data).attr('action');
+    $.ajax(url + '.json', {
+        data: form,
+        type: 'post',
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+        dataType: 'json',
+        timeout: 8000,
+        cache: false,
+        success: onSuccess,
+        error: onError 
+      } 
+    );
+};
+
+
+var authticatedViewModel = function() {
+  var self = this;
+  // self.signOut = ko.observable();
+
+    self.currentRequest = ko.observable(false);
+    self.flashMessage = ko.observable('');
+
+
+    self.showFlash = function(msg){
+      self.currentRequest(true);
+      self.flashMessage(msg);
+    }
+
+    self.displayFlash = ko.computed(function(){
+      if (self.flashMessage().length  >= 0 && self.currentRequest() )  {
+        return true;
+      } 
+    }, this);
+
+
+  self.email = ko.observable(user.email);
+  self.name = ko.observable(user.name);
+  self.id = ko.observable(user.id);
+  self.password = '';
+  self.current_password = ko.observable();
+  self.updateInformation = ko.observable();
+
+  self.updateInformation = function  (data) {
+    var onSuccess = function  (res) {
+      self.name(res.name);
+      self.id(res.id);
+      self.email(res.email);
+      self.showFlash('Information Updated');
+    }
+    var onError = function ( jqXHR, textStatus,errorThrow) {
+      if (jqXHR.status == 401) {
+        self.showFlash('please provide correct data');
+      }
+    }
+    ajaxSubmit(data,onSuccess,onError);
+  };
+  self.signOut = function  (data) {
+    return true;
+  }
+
+};
+
 var unauthenticatedViewModel = function()  {
 
   var self = this;
@@ -9,12 +73,10 @@ var unauthenticatedViewModel = function()  {
   self.id = ko.observable();
   
   self.isSignedIn = ko.observable(false);
-
   self.current_password = ko.observable();
   self.update_password = ko.observable();
   self.update_password_confirmation = ko.observable();
   self.name = ko.observable();
-  self.showFlash = ko.observable();
   self.password = '';
   self.authenticity_token = '';
   self.new_signup_password = ko.observable();
@@ -49,45 +111,31 @@ var unauthenticatedViewModel = function()  {
   };
 
   self.signUp = function (data) {
-    var _callback = function(res){
-        self.showFlash('You were signedup');
-        setCookie('user_id',res.id,1);
-        self.id(res.id);
-        self.email(res.email);
-        self.name(res.name);
-        self.isSignedIn(true);
-        $('meta[name="csrf-token"]').attr('content' , res.token) //ugly hack 
+    var onSuccess = function(res){
+        self.showFlash('Thanks, you are signed up');
+        window.setTimeout(function() { location.href = location.origin + '/dashboard' }, 10000);
       };
-    ajaxSubmit(data, _callback);
+      var onError = function  (jqXHR, textStatus,errorThrow) {
+        self.showFlash(jqXHR.responseJSON[0]);
+      }
+    ajaxSubmit(data, onSuccess, onError);
   };
 
   self.signin = function(data){
-      var _callback = function(res){
-        self.showFlash('You are signed in');
-        setCookie('user_id',res.id,1);
-        self.id(res.id);
-        self.email(res.email);
-        self.name(res.name);
-        self.isSignedIn(true);
-        $('meta[name="csrf-token"]').attr('content' , res.token) //ugly hack 
-      };
-    ajaxSubmit( data, _callback );
+      var success = function(res){
+        self.showFlash('You are signed in. we are redirecting you');
+        // setTimeout(location.href = location.origin + '/dashboard', 15000);
+        location.href = location.origin + '/dashboard';
+      }
+      var errror = function  (data) {
+
+        self.showFlash(data.responseJSON.error);
+      }
+    ajaxSubmit( data, success , errror );
   };
 
-  self.updateInformation = function  (data) {
-    var onSuccess = function  () {
-      self.showFlash('Information updated');
-      self.isSignedIn(true);
-    };
-    ajaxSubmit(data,onSuccess);
-  };
 
-  self.retrievePassword = function(data){
-    var onSuccess = function() {
-      self.showFlash('Password request sent');
-    };
-    ajaxSubmit(data,onSuccess);
-  };
+
 
   self.signOut = function(data){
     ajaxSubmit(data,function(data, textStatus) { 
@@ -97,9 +145,7 @@ var unauthenticatedViewModel = function()  {
     })
   };
 
-  self.logout = function(data) {
-    
-  }
+
 
   self.passwordMatch = function() {
     if (self.new_signup_password() === self.new_signup_password_confirmation())
@@ -116,40 +162,8 @@ var unauthenticatedViewModel = function()  {
       location.hash = name;
   };
 
-  function setCookie(c_name,value,exdays)
-    {
-    var exdate=new Date();
-    exdate.setDate(exdate.getDate() + exdays);
-    var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
-    document.cookie=c_name + "=" + c_value;
-    }
 
-    function getCookie(c_name)
-      {
-      var c_value = document.cookie;
-      var c_start = c_value.indexOf(" " + c_name + "=");
-      if (c_start == -1)
-        {
-        c_start = c_value.indexOf(c_name + "=");
-        }
-      if (c_start == -1)
-        {
-        c_value = null;
-        }
-      else
-        {
-        c_start = c_value.indexOf("=", c_start) + 1;
-        var c_end = c_value.indexOf(";", c_start);
-        if (c_end == -1)
-        {
-      c_end = c_value.length;
-      }
-      c_value = unescape(c_value.substring(c_start,c_end));
-      }
-      return c_value;
-      }
-
-  var ajaxSubmit = function  (data,onSuccess) {
+  var ajaxSubmit = function  (data,onSuccess,onError) {
     var form = $(data).serialize();
     var url = $(data).attr('action');
     
@@ -161,11 +175,9 @@ var unauthenticatedViewModel = function()  {
       timeout: 8000,
       cache: false,
       success: onSuccess,
-      error: function(data,textStatus) {
-        self.showFlash('error occured');
-        }
-      } 
-    );
+      error: onError
+    }
+    )
   };
 
 

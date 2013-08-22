@@ -11,26 +11,4 @@
     %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}/
     = javascript_include_tag "application"
   %body
-    .span6.offset3.awkward
-      %h2 Devise Knockout example application
-      .alert.alert-info{"data-bind" => "visible: displayFlash"}
-        <!--ko text: flashMessage--><!--/ko-->
-      #unauthenticated-view-container{'data-bind' => 'visible: !isSignedIn()'}
-        %ul.nav.nav-tabs
-          %li{"data-bind" => "css: { active: currentPage() == 'signin' }"}
-            %a{"data-bind" => "click: showSignin", "data-toggle" => "tab", :href => "#signin"} Login
-          %li{"data-bind" => "css: { active: currentPage() == 'signup' }"}
-            %a{"data-bind" => "click: showSignUp", "data-toggle" => "tab", :href => "#signup"} Sign Up
-          %li{"data-bind" => "css: { active: currentPage() == 'retrieve-password' }"}
-            %a{"data-bind" => "click: showRetrievePassword", "data-toggle" => "tab", :href => "#retrieve-password"} Retrieve Password
-        #tab-content.tab-content
-          = render 'shared/signin'
-          = render 'shared/signup'
-          = render 'shared/retrieve_password'
-      #authticated{'data-bind' => 'visible: isSignedIn()'}
-        = render 'shared/authenticated'
-   
-/ # = yield    
-:javascript
-  ko.applyBindings(new unauthenticatedViewModel());
-
+    = yield

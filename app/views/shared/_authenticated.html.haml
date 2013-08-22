@@ -1,6 +1,5 @@
-= form_for(@user, :as => :user, :url => destroy_user_session_path ,  html: { data: { bind: "submit: signOut"  } } ) do |f| 
-  = hidden_field_tag '_method', 'delete'
-  = f.submit "Signout" ,  class: "btn btn-primary"
+
+= link_to 'signout' , destroy_user_session_path ,  class: "btn btn-primary" , data: { bind: "click: signOut"  }
 
 = form_for(@user, :as => :user, :url => registration_path(:user) , html: { class: "form-horizontal" , method: :put, data: { bind: "submit: updateInformation"  } } ) do |f| 
   

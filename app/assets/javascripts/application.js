@@ -15,5 +15,5 @@
 //= require bootstrap
 //= require knockout-2.3.0
 //= require sammy
-//= require knockout.mapping-latest
+//= require knockout.localStorage
 //= require_tree .

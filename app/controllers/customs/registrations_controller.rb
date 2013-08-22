@@ -9,13 +9,7 @@ class Customs::RegistrationsController  < Devise::RegistrationsController
     if resource.save
       if resource.active_for_authentication?
         sign_up(resource_name, resource)
-        
-        
-        @token = session[:_csrf_token] = SecureRandom.base64(32)
-        @data = resource
-        @data['token'] = @token
         render :json => @data.to_json
-
       else
         set_flash_message :notice, :"signed_up_but_#{resource.inactive_message}" if is_navigational_format?
         expire_session_data_after_sign_in!
@@ -27,7 +21,7 @@ class Customs::RegistrationsController  < Devise::RegistrationsController
             clean_up_passwords resource
             respond_with resource
           }
-          format.json { render json: resource , status: :unprocessable_entity }
+          format.json { render json: resource.errors.full_messages.to_json , status: :unprocessable_entity }
       end
     end
   end
@@ -63,8 +57,7 @@ class Customs::RegistrationsController  < Devise::RegistrationsController
           respond_with resource
         end
         format.json do
-          render json: resource ,
-                       status: :unauthorized
+          render json:  resource  , :status => :unauthorized
         end
       end
 

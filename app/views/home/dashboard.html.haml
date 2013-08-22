@@ -1,1 +1,40 @@
-silly page
+#dashboard
+  .span6.offset3
+    %h2 Devise Knockout example application
+    .alert.alert-info{"data-bind" => "visible: displayFlash()"}
+      <!--ko text: flashMessage--><!--/ko-->
+  #authticated
+    = link_to 'signout' , destroy_user_session_path ,  class: "btn btn-primary" , data: { bind: "click: signOut"  }
+    = form_for(@user, :as => :user, :url => registration_path(:user) , html: { class: "form-horizontal" , method: :put, data: { bind: "submit: updateInformation"  } } ) do |f| 
+      %fieldset
+        #email_group.control-group
+          %label.control-label{:for => "email"} My Email
+          .controls
+            = f.email_field :email, autofocus: true , data: { bind: 'text: email' }
+        #email_group.control-group
+          %label.control-label{:for => "email"} Id
+          .controls
+            = f.text_field :id, data: { bind: 'text: id' }
+        #email_group.control-group
+          %label.control-label{:for => "email"} Name
+          .controls
+            = f.text_field :name
+        #email_group.control-group
+          %label.control-label{:for => "Password"} Password
+          .controls
+            = f.password_field :password, :autocomplete => "off"
+        #email_group.control-group
+          %label.control-label{:for => "email"} Password confirmation
+          .controls
+            = f.password_field :password_confirmation 
+        
+        #email_group.control-group
+          %label.control-label{:for => "email"} current Password
+          .controls
+            %span.help-inline We need your password to confirm changes
+            = f.password_field :current_password
+        .form-actions
+          = f.submit "Update a/c" ,  class: "btn btn-primary" 
+
+:javascript
+  ko.applyBindings(new authticatedViewModel() , $('#dashboard')[0]);
